@@ -1,0 +1,61 @@
+---
+title: "My Work sample"
+author: "Vu Thuy Tien Trinh"
+output: pdf_document
+---
+
+## Introduction
+
+This project analyzes the relationship between income (GDP) and health outcomes (life expectancy) across countries. 
+
+## Data
+
+The dataset includes country-level information on GDP and life expectancy over time. These variables allow us to examine how income is associated with health outcomes across different countries.
+
+## 1. Data Introduction
+```{r, message=FALSE, warning=FALSE}
+# 1. Load library
+library(tidyverse)
+
+# 2. Read dataset
+my_data <- read.csv("life_expectancy_gdp.csv")
+
+# 3. Check dataset
+summary(my_data)
+
+# 4. Clean dataset
+data_clean <- my_data %>%
+  select(
+    country = Country,
+    year = Year,
+    life_exp = Life.expectancy.at.birth..years.,
+    gdp = GDP
+  )
+```
+
+## 2. Descriptive Visualization
+The following chart explores the relationship between GDP and Life Expectancy.
+
+```{r, message=FALSE, warning=FALSE}
+# drawing plot 
+ggplot(data_clean, aes(x = log(gdp), y = life_exp, color = country)) +
+  geom_point(size = 3) +
+  geom_smooth(method = "lm", color = "black", se = FALSE) +
+  theme_minimal()
+```
+The plot shows a clear positive relationship between GDP and life expectancy. Countries with higher income levels tend to have higher life expectancy. Additionally, within each country, both GDP and life expectancy increase over time.
+
+## 3. Statistical Analysis
+To quantify the relationship, I estimate a simple linear model. 
+
+```{r, message=FALSE, warning=FALSE}
+# running regression
+model <- lm(life_exp ~ log(gdp), data = data_clean)
+
+# show the result
+summary(model)
+```
+
+The regression results show a strong positive relationship between GDP and life expectancy.
+The coefficient on log(GDP) is positive and highly statistically significant (p < 0.001), indicating that higher income levels are associated with longer life expectancy.
+The model explains a substantial share of the variation in life expectancy (R² is about 0.62).
